@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Parcial - 1</title>
+	<link rel="stylesheet" href="styles/bootstrap.min.css">
+	<link rel="stylesheet" href="styles/style.css">
+	<link rel="manifest" href="manifest.webmanifest">
+	<link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;500;700&family=Work+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+	<link rel="icon" href="icons/favicon.png" type="image/x-icon">
+
+</head>
+<body>
+
+	<div class="general">
+		<header data-header="header">
+			<h1>¿Sabés la bandera?</h1>
+		</header>
+		<main>
+			<nav>
+				<button data-home="reiniciar">Reiniciar juego</button>
+			</nav>
+			<h2 data-home="nivel"></h2>
+			<ul data-home="tengo-falta">
+				<li>Aciertos: <span id="tengo">0</span></li>
+				<li>Errores: <span id="falta">0</span></li>
+				<li>Tiempo: <span id="segundos"></span></li>
+			</ul>
+			<div data-home="contenido">
+				<div data-home="inicio">
+					<div data-home="inicio-contenido">
+						<h3 data-home="titulo">¿Sabés la bandera?</h3>
+						<p data-home="instruccion">En este juego tendrás que adivinar a que país pertenece cada bandera. Tienes 20 segundos (pueden ser más) para adivinar. ¿Te animás?</p>
+						<p data-home="instruccion">Para pasar de nivel deberás tener al menos 5 respuestas correctas</p>
+						<ul>
+							<li data-home="instruccion"><span>Nivel 1:</span> aciertos SUMAN 3 segundos</li>
+							<li data-home="instruccion"><span>Nivel 2:</span> aciertos SUMAN 3 segundos, errores RESTAN 3 segundos</li>
+							<li data-home="instruccion"><span>Nivel 3:</span> errores RESTAN 3 segundos</li>
+						</ul>
+						<button data-home="btnInicio">Iniciar</button>
+					</div>
+				</div>
+			</div>
+		</main>
+		<footer data-footer="footer">
+			<p data-footer="p">Copyright © Edmundo Alvarez</p>
+		</footer>
+	</div>	
+	<script src="js/main.js?v=2"></script>
+	<script src="js/bootstrap.min.js"></script>
+</body>
+</html>
