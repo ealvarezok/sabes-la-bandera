@@ -249,12 +249,12 @@ nav{
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
-    gap: 30px;
+    gap: 20px;
     background-color: rgb(15, 15, 15);
     border: 2px white solid;
     border-radius: 8px;
     height: auto;
-    min-height: 560px;
+    min-height: 460px;
     padding: 20px 0px;
     max-width: 400px;
     width: 90%;
