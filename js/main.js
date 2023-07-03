@@ -1,17 +1,29 @@
 'use strict';
 
+//!VER TEMA DE ID . 22/05
+//! Agregar notificaciones 29/05 17.00HS
+//! AGREGAR BANDERAS A LOCALSTORAGE PARA QUE SE CARGUEN
 
-if('serviceWorker' in navigator){
+
+window.addEventListener('DOMContentLoaded' , (event) => {
+    if('serviceWorker' in navigator){
     
-    navigator.serviceWorker.register('sw.js')
-        .then(registration => {
-            console.log(registration);
-        })
-        .catch(rejeted => {
-            console.error(rejeted);
-        })
-};
+        navigator.serviceWorker.register('sw.js')
 
+            .then(registration => {
+                console.log("Regsitramos el service worker",registration);
+            })
+            .catch(rejeted => {
+                console.error("NO SE REGISTRÓ el service worker",rejeted);
+            })
+
+    };
+    if(localStorage.getItem('paisesLocal')){
+        paisesLocal = JSON.parse(localStorage.getItem('paisesLocal'));
+
+    }
+    ConnectionStatus();
+});
 
 
 /**
@@ -25,6 +37,7 @@ let correctasDOM            = document.querySelector('#tengo');
 let incorrectasDOM          = document.querySelector('#falta');
 let segundosDOM             = document.querySelector('#segundos');
 let reiniciar               = document.querySelector('[data-home="reiniciar"]');
+let nav                     = document.querySelector('nav');
     
 /**
  * Creamos etiquetas mediante DOM que luego utilizaremos en el html
@@ -45,6 +58,7 @@ let liResultadoIncorrecto   = document.createElement('li');
 let pModal                  = document.createElement('p');
 let instruccion             = document.createElement('p');
 let h3Nivel                 = document.createElement('h3');
+let estadoUsuario           = document.createElement('p');
 
 /**
  * Seteamos los atributos de las etiquetas DOM
@@ -60,6 +74,8 @@ h3Modal.                    setAttribute('data-home', 'titulo');
 divResultado.               setAttribute('data-modal', 'div-resultado');
 ulResultado.                setAttribute('data-home', 'resultados-provisorios');
 instruccion.                setAttribute('data-home', 'instruccion');
+estadoUsuario.              setAttribute('class', 'estado-conexion');
+
 
 
 /**
@@ -79,7 +95,101 @@ let restoDePaises           = [];
 let opciones                = [];
 
 
+//Instalacion de PWA
+let btnInstalar = document.querySelector('[data-home="btnInstalar"]');
+let eventInstall;
 
+//Escuchamos el evento beforeinstallprompt
+window.addEventListener('beforeinstallprompt', event => {
+    event.preventDefault();
+    eventInstall = event;
+    if(btnInstalar != undefined){
+        btnInstalar.style.display = 'inline-block';
+        btnInstalar.addEventListener('click', InstallApp);
+
+    }
+
+});
+//Creamos la funcion para instalar la app
+let InstallApp = () => {
+    if(eventInstall != undefined){
+        eventInstall.prompt();
+        eventInstall.userChoice
+                    .then(respuesta => {
+                        if(respuesta.outcome === 'accepted'){
+                            console.log('El usuario aceptó instalar');
+                        } else {
+                            console.log('El usuario no aceptó instalar');
+                        }   
+                    })
+    }
+}
+
+//Utilizamos la API share para compartir nuestra app
+//console.log(navigator);
+let btnCompartir = document.querySelector('.btnCompartir');
+if(navigator.share) {
+    btnCompartir.addEventListener('click', () => {
+
+        const shareData = {
+            title   : "Sabes La Bandera?",
+            text    : "Juego de banderas de todo el mundo",
+            url     : "http://localhost:8888/PWA/parcial-1-preentrega/index.html",
+        }
+        navigator.share(shareData)
+                .then (respuesta => {
+                    console.log(respuesta);
+                })
+                .catch (error => {
+                    console.log(error);
+                })
+    });
+} else {
+    btnCompartir.remove();
+}
+
+
+//Notificaciones push (se puede crear boton que llame a la funcion)
+if(window.Notification) {
+    if(Notification.permission !== 'denied'){
+
+        setTimeout(function (){
+            Notification.requestPermission()
+                        .then(permission => {
+                            if(permission == 'granted'){
+                                console.log('El usuario aceptó, realizamos la suscripción al servidor.')
+
+                            } else {
+                                console.log('El usuario no aceptó recibir notificación.')
+
+                            }
+                        })
+
+        }, 5000)
+        
+    }
+}
+
+//Offline - Online
+nav.before(estadoUsuario);
+let ConnectionStatus = () => {
+    console.log('Estado de la conexión: ', navigator.onLine);
+    if(!navigator.onLine){
+     //!Si estado de conexion en false podemos habilitar o deshabilitar cosas
+     //!Agregar css para que el usuario sepa si esta conectado o no 05/06 57 min
+        estadoUsuario.innerText = "Estas jugando offline";
+        estadoUsuario.style.backgroundColor = "red";
+        
+        
+    } else {
+        estadoUsuario.innerText = "Estas jugando online";
+        estadoUsuario.style.backgroundColor = "green";
+
+
+    }
+}
+window.addEventListener("onLine", ConnectionStatus);
+window.addEventListener("offLine", ConnectionStatus);
 
 
 /**
@@ -91,10 +201,11 @@ fetch('https://restcountries.com/v3.1/all')
 
     .then( paisesApi => {
         //console.log('PAISES API',paisesApi);
-
+        //console.log(paisesLocalStorage);
         /**
          * Recorremos la API externa
          */
+
         for (const p of paisesApi) {
 
             /**
@@ -114,26 +225,37 @@ fetch('https://restcountries.com/v3.1/all')
                 bandera     : p["flags"]["svg"], 
                 poblacion   : p["population"] //La poblacion la agregamos por si en un futuro la necesitamos
             })
+            localStorage.setItem('paisesLocal', JSON.stringify(paisesLocal));
+            paisesLocal = JSON.parse(localStorage.getItem('paisesLocal'));
+
+            //Guardamos las imagenes en una variable para que queden cargadas al service worker 
+            let imgCarga = document.createElement('img');
+            imgCarga.src = p["flags"]["svg"];
+
             
         }
+        //console.log(paisesLocal);
 
         /**
          * llamarPaisRandom selecciona un país aleatorio del nuevo array de paises pusheado anteriormente
          */
         const llamarPaisRandom = function(){
             
-            let paisRandom  = paisesLocal[Math.round(Math.random() * paisesLocal.length)];
+            let paisRandom = paisesLocal[Math.round(Math.random() * paisesLocal.length)];
             /**
              * Con el metodo filter quitamos del array el pais seleccionado para que no se repita 
              */
             if (paisesLocal){
-                restoDePaises   = paisesLocal.filter(pais => pais.id != paisRandom.id);
+                restoDePaises = paisesLocal.filter(pais => pais.id != paisRandom.id);
 
             }
             /**
              * Actualizamos el array de paises
              */
-            paisesLocal     = restoDePaises;
+            paisesLocal = restoDePaises;
+            localStorage.setItem('paisesLocal', JSON.stringify(paisesLocal));
+            paisesLocal = JSON.parse(localStorage.getItem('paisesLocal'));
+
 
             return paisRandom
 
@@ -246,7 +368,9 @@ fetch('https://restcountries.com/v3.1/all')
                         opciones                = [];
                         divOpciones.innerHTML   = '';
                         correctas               = 0;
+                        correctasDOM            = correctas;
                         incorrectas             = 0;
+                        incorrectasDOM          = incorrectas;
                         segundos                = 20;
                         tiempo                  = setInterval(cronometro,1000);
                         modal.                  remove();
@@ -268,11 +392,11 @@ fetch('https://restcountries.com/v3.1/all')
          */
         const crearTrivia = function (){
 
-
             /**
              * Ejecutamos en 4 oportunidades la funcion de llamarPaisRandom para obtener la opcion correcta y las otras 3 opciones incorrectas.
              */
             let opcionCorrecta  = llamarPaisRandom();
+            console.log("Opcion correcta",opcionCorrecta)
             let opcionRandom1   = llamarPaisRandom();
             let opcionRandom2   = llamarPaisRandom();
             let opcionRandom3   = llamarPaisRandom();
@@ -295,6 +419,7 @@ fetch('https://restcountries.com/v3.1/all')
              * Seteamos los atributos correspondientes de la imagen
              */
             img.src = opcionCorrecta.bandera;
+            img.alt = opcionCorrecta.nombre;
             img.setAttribute('data-id', opcionCorrecta.id);
             img.setAttribute('data-nombre', opcionCorrecta.nombre);
             img.setAttribute('data-poblacion', opcionCorrecta.poblacion);

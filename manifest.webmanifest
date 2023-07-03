@@ -3,7 +3,8 @@
     "background_color": "grey",
     "short_name": "Sabes la bandera?",
     "name": "Sabes la bandera?",
-    "start_url": "index.html",
+    "scope": "./",
+    "start_url": "./index.html",
     "display":"minimal-ui",
     "icons": [
         {
