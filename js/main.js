@@ -11,10 +11,10 @@ window.addEventListener('DOMContentLoaded' , (event) => {
         navigator.serviceWorker.register('sw.js')
 
             .then(registration => {
-                console.log("Regsitramos el service worker",registration);
+                //console.log("Regsitramos el service worker",registration);
             })
             .catch(rejeted => {
-                console.error("NO SE REGISTRÓ el service worker",rejeted);
+                //console.error("NO SE REGISTRÓ el service worker",rejeted);
             })
 
     };
@@ -117,9 +117,9 @@ let InstallApp = () => {
         eventInstall.userChoice
                     .then(respuesta => {
                         if(respuesta.outcome === 'accepted'){
-                            console.log('El usuario aceptó instalar');
+                            //console.log('El usuario aceptó instalar');
                         } else {
-                            console.log('El usuario no aceptó instalar');
+                            //console.log('El usuario no aceptó instalar');
                         }   
                     })
     }
@@ -138,10 +138,10 @@ if(navigator.share) {
         }
         navigator.share(shareData)
                 .then (respuesta => {
-                    console.log(respuesta);
+                    //console.log(respuesta);
                 })
                 .catch (error => {
-                    console.log(error);
+                    //console.log(error);
                 })
     });
 } else {
@@ -157,10 +157,10 @@ if(window.Notification) {
             Notification.requestPermission()
                         .then(permission => {
                             if(permission == 'granted'){
-                                console.log('El usuario aceptó, realizamos la suscripción al servidor.')
+                                //console.log('El usuario aceptó, realizamos la suscripción al servidor.')
 
                             } else {
-                                console.log('El usuario no aceptó recibir notificación.')
+                                //console.log('El usuario no aceptó recibir notificación.')
 
                             }
                         })
@@ -173,7 +173,7 @@ if(window.Notification) {
 //Offline - Online
 nav.before(estadoUsuario);
 let ConnectionStatus = () => {
-    console.log('Estado de la conexión: ', navigator.onLine);
+    //console.log('Estado de la conexión: ', navigator.onLine);
     if(!navigator.onLine){
      //!Si estado de conexion en false podemos habilitar o deshabilitar cosas
      //!Agregar css para que el usuario sepa si esta conectado o no 05/06 57 min
@@ -265,6 +265,9 @@ fetch('https://restcountries.com/v3.1/all')
          */
         btnIniciar.addEventListener('click', (e) =>{
             if(e){
+                //console.log(correctasDOM);
+
+
                 inicio.remove();
                 crearTrivia();
                 nivel1 = true;
@@ -365,15 +368,15 @@ fetch('https://restcountries.com/v3.1/all')
                  */
                 btnModal.addEventListener('click', (e) =>{
                     if(e){
-                        opciones                = [];
-                        divOpciones.innerHTML   = '';
-                        correctas               = 0;
-                        correctasDOM            = correctas;
-                        incorrectas             = 0;
-                        incorrectasDOM          = incorrectas;
-                        segundos                = 20;
-                        tiempo                  = setInterval(cronometro,1000);
-                        modal.                  remove();
+                        opciones                    = [];
+                        divOpciones.innerHTML       = '';
+                        correctas                   = 0;
+                        correctasDOM.innerText      = correctas;
+                        incorrectas                 = 0;
+                        incorrectasDOM.innerText    = incorrectas;
+                        segundos                    = 20;
+                        tiempo                      = setInterval(cronometro,1000);
+                        modal.                      remove();
                         crearTrivia();
             
                     }
@@ -392,11 +395,12 @@ fetch('https://restcountries.com/v3.1/all')
          */
         const crearTrivia = function (){
 
+            
             /**
              * Ejecutamos en 4 oportunidades la funcion de llamarPaisRandom para obtener la opcion correcta y las otras 3 opciones incorrectas.
              */
             let opcionCorrecta  = llamarPaisRandom();
-            console.log("Opcion correcta",opcionCorrecta)
+            //console.log("Opcion correcta",opcionCorrecta)
             let opcionRandom1   = llamarPaisRandom();
             let opcionRandom2   = llamarPaisRandom();
             let opcionRandom3   = llamarPaisRandom();
@@ -458,7 +462,7 @@ fetch('https://restcountries.com/v3.1/all')
                         if(opcion.dataset.id === img.dataset.id){
                             opcion.style.backgroundColor = 'rgb(3, 152, 0)';
                             correctas++;
-                            correctasDOM = correctas;
+                            correctasDOM.innerText = correctas;
 
                             if(nivel1 == true || nivel2 == true){
                                 segundos += 3;
@@ -469,7 +473,7 @@ fetch('https://restcountries.com/v3.1/all')
                         } else {
                             opcion.style.backgroundColor = 'rgb(228, 29, 3)';
                             incorrectas++;
-                            incorrectasDOM = incorrectas;
+                            incorrectasDOM.innerText = incorrectas;
 
                             if(nivel2 == true || nivel3 == true){
                                 segundos = segundos > 3 ? segundos -= 3 : segundos = 0;

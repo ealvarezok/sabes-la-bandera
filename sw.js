@@ -29,7 +29,7 @@ self.addEventListener('activate' , (e) => {
 })
 
 self.addEventListener('fetch', (e) => {
-    console.log('Request', e);
+    //console.log('Request', e);
         e.respondWith(
         caches.match(e.request)
             .then(response => {
@@ -67,9 +67,9 @@ self.addEventListener('fetch', (e) => {
 
 //Recibimos las notificaciones de push
 self.addEventListener('push', event =>{
-    console.log(event.data.text());
+    //console.log(event.data.text());
     let data = JSON.parse(event.data.text());
-    console.log(data);
+    //console.log(data);
 
     //? Modificar estos datos dependiendo de lo que quiera que diga mi notificacion
     let title = data[0].title;
