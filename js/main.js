@@ -458,7 +458,7 @@ fetch('https://restcountries.com/v3.1/all')
                         if(opcion.dataset.id === img.dataset.id){
                             opcion.style.backgroundColor = 'rgb(3, 152, 0)';
                             correctas++;
-                            correctasDOM = correctas;
+                            correctasDOM.innerText = correctas;
 
                             if(nivel1 == true || nivel2 == true){
                                 segundos += 3;
