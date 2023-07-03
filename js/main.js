@@ -458,7 +458,7 @@ fetch('https://restcountries.com/v3.1/all')
                         if(opcion.dataset.id === img.dataset.id){
                             opcion.style.backgroundColor = 'rgb(3, 152, 0)';
                             correctas++;
-                            correctasDOM.innerText = correctas;
+                            correctasDOM = correctas;
 
                             if(nivel1 == true || nivel2 == true){
                                 segundos += 3;
@@ -469,7 +469,7 @@ fetch('https://restcountries.com/v3.1/all')
                         } else {
                             opcion.style.backgroundColor = 'rgb(228, 29, 3)';
                             incorrectas++;
-                            incorrectasDOM.innerText = incorrectas;
+                            incorrectasDOM = incorrectas;
 
                             if(nivel2 == true || nivel3 == true){
                                 segundos = segundos > 3 ? segundos -= 3 : segundos = 0;
